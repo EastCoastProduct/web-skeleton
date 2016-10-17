@@ -1,6 +1,7 @@
 import 'whatwg-fetch';
 import store from 'store';
 import { browserHistory } from 'react-router';
+import FormData from 'form-data';
 
 const defaultHeaders = {
   Authorization: store.get('token') || '',
