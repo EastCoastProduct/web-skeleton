@@ -11,6 +11,7 @@ export class EditProfileComponent extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     user: PropTypes.object.isRequired,
+    route: PropTypes.object.isRequired,
   };
 
   constructor() {
@@ -44,12 +45,17 @@ export class EditProfileComponent extends Component {
         <ProfileForm
           handleProfileUpdate={this.handleProfileUpdate}
           user={user}
+          route={this.props.route}
         />
         <ChangeEmailForm
           handleChangeEmail={this.handleChangeEmail}
           user={user}
+          route={this.props.route}
         />
-        <ChangePasswordForm handleChangePassword={this.handleChangePassword} />
+        <ChangePasswordForm
+          handleChangePassword={this.handleChangePassword}
+          route={this.props.route}
+        />
         <Link to="/profile">View Profile</Link>
       </section>
     );

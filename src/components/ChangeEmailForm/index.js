@@ -1,9 +1,11 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Field, reduxForm } from 'redux-form/immutable';
+import { withRouter } from 'react-router';
 import { withProps } from 'recompose';
 import { isEmail, isPassword, isRequired, isUsedEmail }
   from '../../utils/validator';
 import Input from '../Input';
+import onRouteLeave from '../../utils/routeLeaveHook';
 
 export const validate = (values, { initialValues }) => {
   const { oldEmail, newEmail, password } = values.toJS();
@@ -18,53 +20,63 @@ export const validate = (values, { initialValues }) => {
   return errors;
 };
 
-export const ChangeEmailFormComponent = (props) => {
-  const { error, handleChangeEmail, handleSubmit, submitSucceeded,
-    submitting } = props;
+export class ChangeEmailFormComponent extends Component {
+  static propTypes = {
+    error: PropTypes.string,
+    handleChangeEmail: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    submitSucceeded: PropTypes.bool.isRequired,
+    submitting: PropTypes.bool.isRequired,
+    router: PropTypes.object.isRequired,
+    route: PropTypes.object.isRequired,
+    dirty: PropTypes.bool.isRequired,
+  };
 
-  return (
-    <form onSubmit={handleSubmit(handleChangeEmail)} noValidate>
-      <Field
-        name="oldEmail"
-        component={Input}
-        label="Old Email"
-        type="email"
-        placeholder="Old Email"
-      />
-      <Field
-        name="newEmail"
-        component={Input}
-        label="New Email"
-        type="email"
-        placeholder="New Email"
-      />
-      <Field
-        name="password"
-        component={Input}
-        label="Password"
-        type="password"
-        placeholder="Password"
-      />
-      {submitSucceeded && !submitting && <p>Open new email and confirm!</p>}
-      {error && <p>{error}</p>}
-      <button type="submit" disabled={submitting}>Change</button>
-    </form>
-  );
-};
+  componentWillReceiveProps() {
+    const { dirty, router, route } = this.props;
+    onRouteLeave(router, route, dirty);
+  }
 
-ChangeEmailFormComponent.propTypes = {
-  error: PropTypes.string,
-  handleChangeEmail: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  submitSucceeded: PropTypes.bool.isRequired,
-  submitting: PropTypes.bool.isRequired,
-};
+  render() {
+    const { error, handleChangeEmail, handleSubmit, submitSucceeded,
+      submitting } = this.props;
+
+    return (
+      <form onSubmit={handleSubmit(handleChangeEmail)} noValidate>
+        <Field
+          name="oldEmail"
+          component={Input}
+          label="Old Email"
+          type="email"
+          placeholder="Old Email"
+        />
+        <Field
+          name="newEmail"
+          component={Input}
+          label="New Email"
+          type="email"
+          placeholder="New Email"
+        />
+        <Field
+          name="password"
+          component={Input}
+          label="Password"
+          type="password"
+          placeholder="Password"
+        />
+        {submitSucceeded && !submitting && <p>Open new email and confirm!</p>}
+        {error && <p>{error}</p>}
+        <button type="submit" disabled={submitting}>Change</button>
+      </form>
+    );
+  }
+}
 
 export default withProps(({ user }) => ({
   initialValues: {
     oldEmail: user.get('email'),
   },
-}))(reduxForm({
+}))(withRouter(reduxForm({
   form: 'ChangeEmailForm',
   validate,
-})(ChangeEmailFormComponent));
+})(ChangeEmailFormComponent)));
