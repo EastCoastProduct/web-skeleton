@@ -26,6 +26,7 @@ The repository contains simple startup application with authentication and user 
   - [createFormData.js](#createformdatajs)
   - [fetch.js](#fetchjs)
   - [parseErrors.js](#parseerrorsjs)
+  - [routeLeaveHook.js](#routeLeaveHook)
   - [validator.js](#validatorjs)
 10. [LOCAL STORAGE](#local-storage)
 11. [GENERIC FORM FUNCTIONALITY](#generic-form-functionality)
@@ -252,6 +253,9 @@ A module which exports Fetch API. We don't call Fetch API immediately from our a
 
 ### parseErrors.js
 A module that parses additional error messages returned from API request. Our error response object will always have some generic message but in the case of POST request we can have additional errors contained per each parameter sent in POST request. For instance, we also have validation on API in the case of POST request where we send form values. Upon return, this module parses additional debugInfo data and assigns each field error. Because we use Redux Form to handle our form functionality we are using SubmissionError constructor to create those errors. This way our Redux Form knows exactly which error belongs to which input.
+
+### routeLeaveHook.js
+A module that returns modal with message in case user wants to change route from current one with unsubmitted form.
 
 ### validator.js
 A module that holds multiple functions which validate certain data inside our forms and constructs error messages in case of invalid data. Essential for form validation and it should contain same logic as validation on API.
