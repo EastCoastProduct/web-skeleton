@@ -5,8 +5,8 @@ import Input from '../Input';
 import Textarea from '../Textarea';
 
 export const ProfileFormComponent = (props) => {
-  const { error, handleProfileUpdate, handleSubmit, submitSucceeded,
-    submitting } = props;
+  const { error, handleProfileUpdate, handleSubmit, handlePreviewImage,
+    submitSucceeded, submitting } = props;
 
   return (
     <form onSubmit={handleSubmit(handleProfileUpdate)} noValidate>
@@ -15,6 +15,7 @@ export const ProfileFormComponent = (props) => {
         component={Input}
         label="Profile Image"
         type="file"
+        onChange={handlePreviewImage}
       />
       <Field
         name="firstname"
@@ -50,6 +51,7 @@ ProfileFormComponent.propTypes = {
   error: PropTypes.string,
   handleProfileUpdate: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  handlePreviewImage: PropTypes.func.isRequired,
   submitSucceeded: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
 };

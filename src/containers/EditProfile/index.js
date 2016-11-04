@@ -6,6 +6,7 @@ import { profileUpdateFetch, changeEmailFetch, changePasswordFetch }
 import ProfileForm from '../../components/ProfileForm';
 import ChangeEmailForm from '../../components/ChangeEmailForm';
 import ChangePasswordForm from '../../components/ChangePasswordForm';
+import ImageEditor from '../../components/ImageEditor';
 
 export class EditProfileComponent extends Component {
   static propTypes = {
@@ -13,11 +14,15 @@ export class EditProfileComponent extends Component {
     user: PropTypes.object.isRequired,
   };
 
+  static state = { img: null };
+
   constructor() {
     super();
     this.handleProfileUpdate = this.handleProfileUpdate.bind(this);
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
+    this.handlePreviewImage = this.handlePreviewImage.bind(this);
+    this.state = { img: '' };
   }
 
   handleProfileUpdate(values) {
@@ -36,6 +41,13 @@ export class EditProfileComponent extends Component {
     return dispatch(changePasswordFetch(newValues));
   }
 
+  handlePreviewImage(value) {
+    if (value.target.files && value.target.files[0]) {
+      const dataURL = window.URL.createObjectURL(value.target.files[0]);
+      this.setState({ img: dataURL });
+    }
+  }
+
   render() {
     const { user } = this.props;
 
@@ -43,6 +55,7 @@ export class EditProfileComponent extends Component {
       <section>
         <ProfileForm
           handleProfileUpdate={this.handleProfileUpdate}
+          handlePreviewImage={this.handlePreviewImage}
           user={user}
         />
         <ChangeEmailForm
@@ -51,6 +64,8 @@ export class EditProfileComponent extends Component {
         />
         <ChangePasswordForm handleChangePassword={this.handleChangePassword} />
         <Link to="/profile">View Profile</Link>
+
+        {this.state.img !== '' && <ImageEditor image={this.state.img} />}
       </section>
     );
   }
