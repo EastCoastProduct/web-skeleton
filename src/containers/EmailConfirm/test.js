@@ -25,8 +25,8 @@ describe('EmailConfirm component', () => {
 
   it('componentDidMount method', () => {
     instance.componentDidMount();
-
     jest.runAllTimers();
+
     expect(mockRouter.push).toHaveBeenCalledWith('/');
     expect(Actions.emailConfirmFetch)
       .toHaveBeenCalledWith({ token: 'this.is.code' }, jasmine.any(Function));

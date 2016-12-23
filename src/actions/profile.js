@@ -1,4 +1,3 @@
-import store from 'store';
 import { PROFILE_UPDATE_SUCCESS } from '../constants/actions';
 import { API_URL } from '../constants/application';
 import createFormData from '../utils/createFormData';
@@ -12,20 +11,18 @@ export const profileUpdateSuccess = user => ({
 
 export const profileGetFetch = userId =>
   dispatch =>
-    fetch(`${API_URL}/users/${userId}`).then((resp) => {
-      store.set('user', resp);
-      return dispatch(profileUpdateSuccess(resp));
-    });
+    fetch(`${API_URL}/users/${userId}`).then(resp =>
+      dispatch(profileUpdateSuccess(resp)),
+    );
 
 export const profileUpdateFetch = (values, userId) =>
   dispatch =>
     fetch(`${API_URL}/users/${userId}`, {
       method: 'POST',
       body: createFormData(values),
-    }).then((resp) => {
-      store.set('user', resp);
-      return dispatch(profileUpdateSuccess(resp));
-    }).catch(err =>
+    }).then(resp =>
+      dispatch(profileUpdateSuccess(resp)),
+    ).catch(err =>
       Promise.reject(parseErrors(err)),
     );
 

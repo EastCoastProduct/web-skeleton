@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
+import { persistStore, autoRehydrate } from 'redux-persist-immutable';
 import thunk from 'redux-thunk';
 import rootReducer from '../reducers';
 
@@ -8,6 +9,7 @@ export function configureStore(env) {
   if (env === 'development') {
     createStoreWithMiddleware = compose(
       applyMiddleware(thunk),
+      autoRehydrate(),
       window.devToolsExtension ? window.devToolsExtension() : f => f,
     )(createStore);
 
@@ -20,10 +22,15 @@ export function configureStore(env) {
   } else {
     createStoreWithMiddleware = compose(
       applyMiddleware(thunk),
+      autoRehydrate(),
     )(createStore);
   }
 
-  return createStoreWithMiddleware(rootReducer);
+  const store = createStoreWithMiddleware(rootReducer);
+  persistStore(store, {
+    whitelist: ['token', 'user'],
+  });
+  return store;
 }
 
 export default configureStore(process.env.NODE_ENV);

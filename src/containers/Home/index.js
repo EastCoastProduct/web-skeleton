@@ -5,8 +5,8 @@ import ErrorMsg from '../../components/ErrorMsg';
 
 export class HomeComponent extends Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
+    emailConfirm: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
   };
 
@@ -23,7 +23,7 @@ export class HomeComponent extends Component {
   }
 
   render() {
-    const { auth, user } = this.props;
+    const { emailConfirm, user } = this.props;
 
     return (
       <main>
@@ -33,9 +33,9 @@ export class HomeComponent extends Component {
               You have to confirm your email. Please open email to follow link
               or <a href onClick={this.handleEmailResend}>resend</a> email.
             </p>
-            {auth.get('emailResendSuccess') && <p>Email sent!</p>}
-            {auth.get('emailResendError') &&
-              <ErrorMsg>{auth.get('emailResendError')}</ErrorMsg>
+            {emailConfirm.get('resendSuccess') && <p>Email sent!</p>}
+            {emailConfirm.get('resendError') &&
+              <ErrorMsg>{emailConfirm.get('resendError')}</ErrorMsg>
             }
           </div>
         }
@@ -46,6 +46,6 @@ export class HomeComponent extends Component {
 }
 
 export default connect(state => ({
-  auth: state.get('auth'),
+  emailConfirm: state.get('emailConfirm'),
   user: state.get('user'),
 }))(HomeComponent);

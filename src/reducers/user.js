@@ -1,11 +1,8 @@
-import store from 'store';
 import { fromJS } from 'immutable';
 import { SIGNUP_LOGIN_SUCCESS, EMAIL_CONFIRM_SUCCESS, PROFILE_UPDATE_SUCCESS }
   from '../constants/actions';
 
-const initialState = () => fromJS(store.get('user')) || fromJS({});
-
-export default (state = initialState(), action) => {
+export default (state = fromJS({}), action) => {
   switch (action.type) {
     case SIGNUP_LOGIN_SUCCESS:
     case EMAIL_CONFIRM_SUCCESS:

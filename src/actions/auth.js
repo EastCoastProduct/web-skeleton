@@ -1,10 +1,14 @@
-import store from 'store';
-import { SIGNUP_LOGIN_SUCCESS, LOGOUT_SUCCESS, EMAIL_CONFIRM_SUCCESS,
-  EMAIL_CONFIRM_FAILED, EMAIL_RESEND_FETCHING, EMAIL_RESEND_SUCCESS,
-  EMAIL_RESEND_FAILED } from '../constants/actions';
+import { TOKEN_GET_SUCCESS, SIGNUP_LOGIN_SUCCESS, LOGOUT_SUCCESS,
+  EMAIL_CONFIRM_SUCCESS, EMAIL_CONFIRM_FAILED, EMAIL_RESEND_FETCHING,
+  EMAIL_RESEND_SUCCESS, EMAIL_RESEND_FAILED } from '../constants/actions';
 import { API_URL } from '../constants/application';
 import parseErrors from '../utils/parseErrors';
 import fetch from '../utils/fetch';
+
+export const tokenGetSuccess = token => ({
+  type: TOKEN_GET_SUCCESS,
+  token,
+});
 
 export const signupLoginSuccess = user => ({
   type: SIGNUP_LOGIN_SUCCESS,
@@ -43,8 +47,7 @@ export const authenticate = (values, dispatch, cb) =>
     method: 'POST',
     body: JSON.stringify(values),
   }).then((resp) => {
-    store.set('token', `Bearer ${resp.token}`);
-    store.set('user', resp.user);
+    dispatch(tokenGetSuccess(`Bearer ${resp.token}`));
     dispatch(signupLoginSuccess(resp.user));
     return typeof cb === 'function' && cb();
   });
@@ -68,7 +71,6 @@ export const loginFetch = (values, cb) =>
 
 export const logoutAction = cb =>
   (dispatch) => {
-    store.clear();
     dispatch(logoutSuccess());
     return typeof cb === 'function' && cb();
   };
@@ -99,10 +101,11 @@ export const emailConfirmFetch = (values, cb) =>
       method: 'POST',
       body: JSON.stringify(values),
     }).then((resp) => {
-      const user = store.get('user');
+      const user = {}; // remove
+      // const user = store.get('user');
       user.email = resp.email;
       user.confirmed = true;
-      store.set('user', user);
+      // store.set('user', user);
       dispatch(emailConfirmSuccess(user));
       return typeof cb === 'function' && cb();
     }).catch(err =>

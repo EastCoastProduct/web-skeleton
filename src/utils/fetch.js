@@ -1,9 +1,9 @@
 import 'whatwg-fetch';
-import store from 'store';
 import { browserHistory } from 'react-router';
+import store from '../store';
 
 const defaultHeaders = () => ({
-  Authorization: store.get('token') || '',
+  Authorization: store.getState().get('token') || '',
   'Content-Type': 'application/json',
 });
 

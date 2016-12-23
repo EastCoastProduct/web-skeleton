@@ -3,35 +3,35 @@ import { EMAIL_CONFIRM_SUCCESS, EMAIL_CONFIRM_FAILED, EMAIL_RESEND_FETCHING,
   EMAIL_RESEND_SUCCESS, EMAIL_RESEND_FAILED } from '../constants/actions';
 
 const initialState = fromJS({
-  emailConfirmationError: null,
-  emailConfirmationSuccess: false,
-  emailResendError: null,
-  emailResendSuccess: false,
+  confirmationError: null,
+  confirmationSuccess: false,
+  resendError: null,
+  resendSuccess: false,
 });
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case EMAIL_CONFIRM_SUCCESS:
       return state.merge(fromJS({
-        emailConfirmationError: null,
-        emailConfirmationSuccess: true,
+        confirmationError: null,
+        confirmationSuccess: true,
       }));
     case EMAIL_CONFIRM_FAILED:
       return state.merge(fromJS({
-        emailConfirmationError: action.error,
-        emailConfirmationSuccess: false,
+        confirmationError: action.error,
+        confirmationSuccess: false,
       }));
     case EMAIL_RESEND_FETCHING:
       return initialState;
     case EMAIL_RESEND_SUCCESS:
       return state.merge(fromJS({
-        emailResendError: null,
-        emailResendSuccess: true,
+        resendError: null,
+        resendSuccess: true,
       }));
     case EMAIL_RESEND_FAILED:
       return state.merge(fromJS({
-        emailResendError: action.error,
-        emailResendSuccess: false,
+        resendError: action.error,
+        resendSuccess: false,
       }));
     default:
       return state;

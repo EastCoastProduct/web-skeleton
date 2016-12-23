@@ -7,8 +7,8 @@ import ErrorMsg from '../../components/ErrorMsg';
 
 export class EmailConfirmComponent extends Component {
   static propTypes = {
-    auth: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
+    emailConfirm: PropTypes.object.isRequired,
     params: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
   };
@@ -21,16 +21,16 @@ export class EmailConfirmComponent extends Component {
   }
 
   render() {
-    const { auth } = this.props;
+    const { emailConfirm } = this.props;
 
     return (
       <main>
         <p>Checking your email...</p>
-        {auth.get('emailConfirmationSuccess') &&
+        {emailConfirm.get('confirmationSuccess') &&
           <p>Email successfully checked. Redirecting...</p>
         }
-        {auth.get('emailConfirmationError') &&
-          <ErrorMsg>{auth.get('emailConfirmationError')}</ErrorMsg>
+        {emailConfirm.get('confirmationError') &&
+          <ErrorMsg>{emailConfirm.get('confirmationError')}</ErrorMsg>
         }
       </main>
     );
@@ -38,5 +38,5 @@ export class EmailConfirmComponent extends Component {
 }
 
 export default connect(state => ({
-  auth: state.get('auth'),
+  emailConfirm: state.get('emailConfirm'),
 }))(withRouter(EmailConfirmComponent));
