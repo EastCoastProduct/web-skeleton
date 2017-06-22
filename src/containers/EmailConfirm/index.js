@@ -15,9 +15,9 @@ export class EmailConfirmComponent extends Component {
 
   componentDidMount() {
     const { dispatch, params, router } = this.props;
-    return dispatch(emailConfirmFetch({ token: params.code }, () =>
+    return dispatch(emailConfirmFetch({ token: params.code })).then(() =>
       setTimeout(() => router.push('/'), REDIRECTION),
-    ));
+    );
   }
 
   render() {

@@ -5,7 +5,7 @@ import { LoginComponent, validate } from './';
 import * as Actions from '../../actions/auth';
 
 describe('Login component', () => {
-  const mockDispatch = jest.fn();
+  const mockDispatch = jest.fn(f => f);
   const mockRouter = {
     push: jest.fn(),
   };
@@ -19,7 +19,7 @@ describe('Login component', () => {
     />
   );
   const instance = wrapper.instance();
-  Actions.loginFetch = jest.fn((values, cb) => cb());
+  Actions.loginFetch = jest.fn(() => createResolvedThenable());
 
   it('validate function success', () => {
     const values = fromJS({
@@ -52,7 +52,7 @@ describe('Login component', () => {
     instance.handleLogin(values);
 
     expect(Actions.loginFetch)
-      .toHaveBeenCalledWith(values, jasmine.any(Function));
+      .toHaveBeenCalledWith(values);
     expect(mockRouter.push).toHaveBeenCalledWith('/');
     expect(mockDispatch).toHaveBeenCalled();
   });

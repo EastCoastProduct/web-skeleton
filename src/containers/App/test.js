@@ -6,7 +6,7 @@ import * as Actions from '../../actions/auth';
 
 describe('App component', () => {
   const children = <div>Test</div>;
-  const mockDispatch = jest.fn();
+  const mockDispatch = jest.fn(f => f);
   const mockRouter = {
     push: jest.fn(),
   };
@@ -17,7 +17,7 @@ describe('App component', () => {
     >{children}</AppComponent>
   );
   const instance = wrapper.instance();
-  Actions.logoutAction = jest.fn(cb => cb());
+  Actions.logoutAction = jest.fn(() => createResolvedThenable());
 
   it('handleLogout method', () => {
     const mockPreventDefault = jest.fn();
@@ -27,7 +27,7 @@ describe('App component', () => {
     instance.handleLogout(event);
 
     expect(mockPreventDefault).toHaveBeenCalledTimes(1);
-    expect(Actions.logoutAction).toHaveBeenCalledWith(jasmine.any(Function));
+    expect(Actions.logoutAction).toHaveBeenCalled();
     expect(mockRouter.push).toHaveBeenCalledWith('/login');
     expect(mockDispatch).toHaveBeenCalled();
   });

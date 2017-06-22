@@ -40,9 +40,9 @@ export class RecoverPasswordComponent extends Component {
     const { dispatch, params: { code }, router } = this.props;
 
     const newValues = values.delete('confirmation');
-    return dispatch(recoverPasswordFetch(newValues, code, () =>
+    return dispatch(recoverPasswordFetch(newValues, code)).then(() =>
       setTimeout(() => router.push('/login'), REDIRECTION),
-    ));
+    );
   }
 
   render() {
