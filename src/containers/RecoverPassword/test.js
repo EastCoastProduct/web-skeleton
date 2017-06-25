@@ -60,8 +60,8 @@ describe('RecoverPassword component', () => {
     expect(mockRouter.push).not.toHaveBeenCalled();
 
     return mockDispatch.mock.calls[0][0].then(() => {
-        jest.runAllTimers();
-        expect(mockRouter.push).toHaveBeenCalledWith('/login');
+      jest.runAllTimers();
+      expect(mockRouter.push).toHaveBeenCalledWith('/login');
     });
   });
 });

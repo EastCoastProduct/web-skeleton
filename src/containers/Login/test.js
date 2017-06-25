@@ -56,7 +56,7 @@ describe('Login component', () => {
     expect(mockRouter.push).not.toHaveBeenCalled();
 
     return mockDispatch.mock.calls[0][0].then(() => {
-        expect(mockRouter.push).toHaveBeenCalledWith('/');
+      expect(mockRouter.push).toHaveBeenCalledWith('/');
     });
   });
 });

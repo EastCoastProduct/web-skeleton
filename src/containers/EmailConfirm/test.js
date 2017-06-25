@@ -28,7 +28,6 @@ describe('EmailConfirm component', () => {
 
     expect(mockDispatch).toHaveBeenCalled();
     expect(Actions.emailConfirmFetch).toHaveBeenCalledWith({ token: 'this.is.code' });
-
     expect(mockRouter.push).not.toHaveBeenCalled();
 
     return mockDispatch.mock.calls[0][0].then(() => {
