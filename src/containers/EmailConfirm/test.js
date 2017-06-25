@@ -5,7 +5,7 @@ import { EmailConfirmComponent } from './';
 import * as Actions from '../../actions/auth';
 
 describe('EmailConfirm component', () => {
-  const mockDispatch = jest.fn();
+  const mockDispatch = jest.fn(f => f);
   const mockRouter = {
     push: jest.fn(),
   };
@@ -21,15 +21,18 @@ describe('EmailConfirm component', () => {
     />
   );
   const instance = wrapper.instance();
-  Actions.emailConfirmFetch = jest.fn((values, cb) => cb());
+  Actions.emailConfirmFetch = jest.fn(() => Promise.resolve());
 
   it('componentDidMount method', () => {
     instance.componentDidMount();
 
-    jest.runAllTimers();
-    expect(mockRouter.push).toHaveBeenCalledWith('/');
-    expect(Actions.emailConfirmFetch)
-      .toHaveBeenCalledWith({ token: 'this.is.code' }, jasmine.any(Function));
     expect(mockDispatch).toHaveBeenCalled();
+    expect(Actions.emailConfirmFetch).toHaveBeenCalledWith({ token: 'this.is.code' });
+    expect(mockRouter.push).not.toHaveBeenCalled();
+
+    return mockDispatch.mock.calls[0][0].then(() => {
+      jest.runAllTimers();
+      expect(mockRouter.push).toHaveBeenCalledWith('/');
+    });
   });
 });

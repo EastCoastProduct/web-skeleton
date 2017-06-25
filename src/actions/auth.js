@@ -6,6 +6,10 @@ import { API_URL } from '../constants/application';
 import parseErrors from '../utils/parseErrors';
 import fetch from '../utils/fetch';
 
+const throwParsed = (error) => {
+  throw parseErrors(error);
+};
+
 export const signupLoginSuccess = user => ({
   type: SIGNUP_LOGIN_SUCCESS,
   user,
@@ -38,39 +42,36 @@ export const emailResendFailed = error => ({
   error,
 });
 
-export const authenticate = (values, dispatch, cb) =>
+export const authenticate = (values, dispatch) =>
   fetch(`${API_URL}/authenticate`, {
     method: 'POST',
     body: JSON.stringify(values),
-  }).then((resp) => {
+  })
+  .catch(throwParsed)
+  .then((resp) => {
     store.set('token', `Bearer ${resp.token}`);
     store.set('user', resp.user);
     dispatch(signupLoginSuccess(resp.user));
-    return typeof cb === 'function' && cb();
   });
 
-export const signupFetch = (values, cb) =>
+export const signupFetch = values =>
   dispatch =>
     fetch(`${API_URL}/users`, {
       method: 'POST',
       body: JSON.stringify(values),
-    }).then(() =>
-      authenticate(values, dispatch, cb),
-    ).catch(err =>
-      Promise.reject(parseErrors(err)),
-    );
+    })
+    .catch(throwParsed)
+    .then(() => authenticate(values, dispatch));
 
-export const loginFetch = (values, cb) =>
+export const loginFetch = values =>
   dispatch =>
-    authenticate(values, dispatch, cb).catch(err =>
-      Promise.reject(parseErrors(err)),
-    );
+    authenticate(values, dispatch);
 
-export const logoutAction = cb =>
+export const logoutAction = () =>
   (dispatch) => {
     store.clear();
     dispatch(logoutSuccess());
-    return typeof cb === 'function' && cb();
+    return Promise.resolve();
   };
 
 export const forgotPasswordFetch = values =>
@@ -78,36 +79,34 @@ export const forgotPasswordFetch = values =>
     fetch(`${API_URL}/recoverPassword`, {
       method: 'POST',
       body: JSON.stringify(values),
-    }).catch(err =>
-      Promise.reject(parseErrors(err)),
-    );
+    })
+    .catch(throwParsed);
 
-export const recoverPasswordFetch = (values, code, cb) =>
+export const recoverPasswordFetch = (values, code) =>
   () =>
     fetch(`${API_URL}/recoverPassword/${code}`, {
       method: 'POST',
       body: JSON.stringify(values),
-    }).then(() =>
-      typeof cb === 'function' && cb(),
-    ).catch(err =>
-      Promise.reject(parseErrors(err)),
-    );
+    })
+    .catch(throwParsed);
 
-export const emailConfirmFetch = (values, cb) =>
+export const emailConfirmFetch = values =>
   dispatch =>
     fetch(`${API_URL}/emailConfirm`, {
       method: 'POST',
       body: JSON.stringify(values),
-    }).then((resp) => {
+    })
+    .catch((err) => {
+      dispatch(emailConfirmFailed(err.message));
+      throw parseErrors(err);
+    })
+    .then((resp) => {
       const user = store.get('user');
       user.email = resp.email;
       user.confirmed = true;
       store.set('user', user);
       dispatch(emailConfirmSuccess(user));
-      return typeof cb === 'function' && cb();
-    }).catch(err =>
-      dispatch(emailConfirmFailed(err.message)),
-    );
+    });
 
 export const emailResendFetch = userId =>
   (dispatch) => {

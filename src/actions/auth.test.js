@@ -93,20 +93,18 @@ describe('auth action creators', () => {
       password: 'Aa123456',
     });
     store.set = jest.fn();
-    const cb = jest.fn();
     const resp = {
       token: 'this.is.token',
       user: user,
     };
     fetchMock.post(`${API_URL}/authenticate`, resp);
 
-    return auth.authenticate(values, mockDispatch, cb).then(() => {
+    return auth.authenticate(values, mockDispatch).then(() => {
       expect(store.set.mock.calls[0])
         .toEqual(['token', `Bearer ${resp.token}`]);
       expect(store.set).toHaveBeenLastCalledWith('user', resp.user);
       expect(store.set).toHaveBeenCalledTimes(2);
       expect(mockDispatch).toHaveBeenCalledWith(expectedSignupLoginAction);
-      expect(cb).toHaveBeenCalled();
     });
   });
 
@@ -115,7 +113,6 @@ describe('auth action creators', () => {
       email: 'test@mail.com',
       password: 'Aa123456',
     });
-    const cb = jest.fn();
     const resp = { message: 'User created' };
     const respAuth = {
       token: 'this.is.token',
@@ -125,7 +122,7 @@ describe('auth action creators', () => {
     fetchMock.post(`${API_URL}/authenticate`, respAuth);
     const reduxStore = mockStore(fromJS({ user: {} }));
 
-    return reduxStore.dispatch(auth.signupFetch(values, cb)).then(() => {
+    return reduxStore.dispatch(auth.signupFetch(values)).then(() => {
       expect(fetchMock.lastCall()[0]).toEqual(`${API_URL}/authenticate`);
     });
   });
@@ -157,7 +154,6 @@ describe('auth action creators', () => {
       email: 'test@mail.com',
       password: 'Aa123456',
     });
-    const cb = jest.fn();
     const resp = {
       error: {
         message: 'Wrong password',
@@ -177,13 +173,12 @@ describe('auth action creators', () => {
 
   it('should make call to logout action', () => {
     store.clear = jest.fn();
-    const cb = jest.fn();
     const reduxStore = mockStore(fromJS({ user: {} }));
-    reduxStore.dispatch(auth.logoutAction(cb));
 
-    expect(store.clear).toHaveBeenCalled();
-    expect(reduxStore.getActions()[0]).toEqual(expectedLogoutAction);
-    expect(cb).toHaveBeenCalled();
+    return reduxStore.dispatch(auth.logoutAction()).then(() => {
+      expect(store.clear).toHaveBeenCalled();
+      expect(reduxStore.getActions()[0]).toEqual(expectedLogoutAction);
+    });
   });
 
   it('should fail to make call to forgotPassword fetch', () => {
@@ -213,15 +208,11 @@ describe('auth action creators', () => {
       newPassword: 'Bb123456',
     });
     const code = 'this.is.code';
-    const cb = jest.fn();
     const resp = { message: 'Password changed.' };
     fetchMock.post(`${API_URL}/recoverPassword/${code}`, resp);
     const reduxStore = mockStore(fromJS({ auth: {} }));
 
-    return reduxStore.dispatch(auth.recoverPasswordFetch(values, code, cb))
-      .then(() => {
-        expect(cb).toHaveBeenCalled();
-      });
+    return reduxStore.dispatch(auth.recoverPasswordFetch(values, code));
   });
 
   it('should fail to make call to recoverPassword fetch', () => {
@@ -254,13 +245,12 @@ describe('auth action creators', () => {
     });
     store.get = jest.fn(() => user);
     store.set = jest.fn();
-    const cb = jest.fn();
     const resp = { email: 'new@mail.com' };
     fetchMock.post(`${API_URL}/emailConfirm`, resp);
     const reduxStore = mockStore(fromJS({ auth: {} }));
 
 
-    return reduxStore.dispatch(auth.emailConfirmFetch(values, cb))
+    return reduxStore.dispatch(auth.emailConfirmFetch(values))
       .then(() => {
         expect(store.get).toHaveBeenCalledWith('user');
         expect(store.set).toHaveBeenCalledWith('user', {
@@ -275,7 +265,6 @@ describe('auth action creators', () => {
           updatedAt: '2016-10-06T14:55:40.722Z',
         });
         expect(reduxStore.getActions()[0]).toEqual(expectedEmailConfirmAction);
-        expect(cb).toHaveBeenCalled();
       });
   });
 

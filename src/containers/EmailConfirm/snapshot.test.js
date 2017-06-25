@@ -4,6 +4,8 @@ import { fromJS } from 'immutable';
 import { EmailConfirmComponent } from './';
 
 describe('EmailConfirm component snapshot', () => {
+  const mockDispatch = () => Promise.resolve();
+
   it('renders with pending request', () => {
     const tree = renderer.create(
       <EmailConfirmComponent
@@ -11,7 +13,7 @@ describe('EmailConfirm component snapshot', () => {
           emailConfirmationSuccess: false,
           emailConfirmationError: false,
         })}
-        dispatch={() => {}}
+        dispatch={mockDispatch}
         params={{}}
         router={{}}
       />
@@ -27,7 +29,7 @@ describe('EmailConfirm component snapshot', () => {
           emailConfirmationSuccess: true,
           emailConfirmationError: false,
         })}
-        dispatch={() => {}}
+        dispatch={mockDispatch}
         params={{}}
         router={{}}
       />
@@ -43,7 +45,7 @@ describe('EmailConfirm component snapshot', () => {
           emailConfirmationSuccess: false,
           emailConfirmationError: 'Token not found',
         })}
-        dispatch={() => {}}
+        dispatch={mockDispatch}
         params={{}}
         router={{}}
       />
