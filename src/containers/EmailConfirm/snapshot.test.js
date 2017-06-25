@@ -4,10 +4,7 @@ import { fromJS } from 'immutable';
 import { EmailConfirmComponent } from './';
 
 describe('EmailConfirm component snapshot', () => {
-  const mockDispatch = () => createResolvedThenable();
-  // jest.mock('../../actions/auth', () => ({
-  //   emailConfirmFetch: () => createResolvedThenable(),
-  // }));
+  const mockDispatch = () => Promise.resolve();
 
   it('renders with pending request', () => {
     const tree = renderer.create(

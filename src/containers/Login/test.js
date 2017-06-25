@@ -19,7 +19,7 @@ describe('Login component', () => {
     />
   );
   const instance = wrapper.instance();
-  Actions.loginFetch = jest.fn(() => createResolvedThenable());
+  Actions.loginFetch = jest.fn(() => Promise.resolve());
 
   it('validate function success', () => {
     const values = fromJS({
@@ -51,9 +51,12 @@ describe('Login component', () => {
     });
     instance.handleLogin(values);
 
-    expect(Actions.loginFetch)
-      .toHaveBeenCalledWith(values);
-    expect(mockRouter.push).toHaveBeenCalledWith('/');
     expect(mockDispatch).toHaveBeenCalled();
+    expect(Actions.loginFetch).toHaveBeenCalledWith(values);
+    expect(mockRouter.push).not.toHaveBeenCalled();
+
+    return mockDispatch.mock.calls[0][0].then(() => {
+        expect(mockRouter.push).toHaveBeenCalledWith('/');
+    });
   });
 });

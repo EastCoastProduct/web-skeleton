@@ -17,7 +17,7 @@ describe('App component', () => {
     >{children}</AppComponent>
   );
   const instance = wrapper.instance();
-  Actions.logoutAction = jest.fn(() => createResolvedThenable());
+  Actions.logoutAction = jest.fn(() => Promise.resolve());
 
   it('handleLogout method', () => {
     const mockPreventDefault = jest.fn();
@@ -27,8 +27,12 @@ describe('App component', () => {
     instance.handleLogout(event);
 
     expect(mockPreventDefault).toHaveBeenCalledTimes(1);
-    expect(Actions.logoutAction).toHaveBeenCalled();
-    expect(mockRouter.push).toHaveBeenCalledWith('/login');
     expect(mockDispatch).toHaveBeenCalled();
+    expect(Actions.logoutAction).toHaveBeenCalled();
+    expect(mockRouter.push).not.toHaveBeenCalled();
+
+    return mockDispatch.mock.calls[0][0].then(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith('/login');
+    });
   });
 });
